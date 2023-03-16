@@ -1,8 +1,6 @@
 const multer = require('multer');
 const path = require('path');
 
-let string = 2;
-
 const imageStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     let folder = "";
