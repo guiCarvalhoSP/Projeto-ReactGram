@@ -24,6 +24,7 @@ const imageUpload = multer({
     if (!file.originalname.match(/\.(png|jpg)$/)) {
       return cb(new Error("Por favor, envie apenas png ou jpg!"));
     }
+    cb(null, true);
   }
 })
 
