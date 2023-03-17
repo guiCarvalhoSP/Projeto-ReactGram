@@ -21,12 +21,10 @@ const insertPhoto = async (req, res) => {
     res.status(422).json({
       errors: ["Houve um problema, por favor tente novamente mais tarde"],
     })
-    return
+    return;
   }
 
   res.status(201).json(newPhoto);
-
-  res.send("Photo insert");
 }
 
 const deletePhoto = async (req, res) => {
@@ -61,7 +59,29 @@ const deletePhoto = async (req, res) => {
 
 }
 
+const getAllPhotos = async (req, res) => {
+  try{
+    const photos = await Photo.find({}).sort([["createdAt", -1]]).exec();
+
+    return res.status(200).json(photos);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({errors: "Ocorreu um erro interno. Tente novamente mais tarde!"});
+  }
+
+}
+
+const getUserPhotos = async (req, res) => {
+  const {id} = req.params;
+  const photos = await Photo.find({userId: id})
+    .sort([["createdAt", -1]]).exec();
+
+  return res.status(200).json(photos)
+}
+
 module.exports = {
   insertPhoto,
-  deletePhoto
+  deletePhoto,
+  getAllPhotos,
+  getUserPhotos
 };
