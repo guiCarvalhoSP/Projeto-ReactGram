@@ -7,7 +7,8 @@ const {
   getAllPhotos, 
   getUserPhotos, 
   getPhotoById, 
-  updatePhoto } = require('../controllers/PhotoControler');
+  updatePhoto, 
+  likePhoto} = require('../controllers/PhotoControler');
 
 const { photoInsertValidation, photoUpdateValidation } = require("../middlewares/photoValidation");
 const authGuard = require("../middlewares/authGuard");
@@ -33,5 +34,7 @@ router.get("/", authGuard, getAllPhotos);
 router.get("/user/:id", authGuard, getUserPhotos);
 router.get("/:id", authGuard, getPhotoById);
 
+router.put("/like/:id", authGuard, likePhoto);
 router.put("/:id", authGuard, photoUpdateValidation(), validate, updatePhoto);
+
 module.exports = router;
