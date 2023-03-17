@@ -79,9 +79,63 @@ const getUserPhotos = async (req, res) => {
   return res.status(200).json(photos)
 }
 
+const getPhotoById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const photo = await Photo.findById(id);
+
+    if (!photo) {
+      res.status(404).json({errors: ["Foto não encontrada."]});
+      return;
+    }
+  
+    return res.status(200).json(photo);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({errors: ["Erro interno. Tente novamente mais tarde!"]});
+  }
+
+}
+
+const updatePhoto = async (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+
+  const reqUser = req.user;
+
+  try {
+    const photo = await Photo.findById(id);
+
+    if(!photo) {
+      res.status(404).json({errors: ["Foto não encontrada"]});
+      return
+    }
+  
+    if(!photo.userId.equals(reqUser._id)) {
+      res.status(422).json({errors: ["Ocorreu um erro. Tente novamente mais tarde!"]});
+    }
+
+    if(title) {
+      photo.title = title;
+    }
+
+    await photo.save();
+
+    res.status(200).json({photo, message: "Foto atualizada com sucesso!"});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({errors: ["Ocorreu um erro. Tente novamente mais tarde!"]});
+  }
+
+
+
+}
 module.exports = {
   insertPhoto,
   deletePhoto,
   getAllPhotos,
-  getUserPhotos
+  getUserPhotos,
+  getPhotoById,
+  updatePhoto
 };
