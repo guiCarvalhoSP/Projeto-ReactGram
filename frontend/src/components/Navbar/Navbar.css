@@ -14,12 +14,12 @@
 
 #search-form svg {
   position: absolute;
-  top: 5px;
-  left: -20px;
+  top: 10px;
+  left: 8px;
 }
 
 #search-form input {
-  padding-left: .5em;
+  padding-left: 2em;
   border: none;
   border-radius: 5px;
   width: 100%;
