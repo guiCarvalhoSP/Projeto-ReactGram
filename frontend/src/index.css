@@ -63,7 +63,7 @@ input::placeholder {
   padding: 10px 8px;
   font-weight: bold;
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 0.9;
   font-size: 1em;
 }
 
@@ -76,7 +76,7 @@ input:disabled {
   background-color: #000;
 }
 
-button:hover, input[type="submit"]{
+button:hover, input[type="submit"]:hover {
   opacity: 1;
 }
 

@@ -17,7 +17,7 @@ export const register = createAsyncThunk("auth/register", async (user, thunkAPI)
     return thunkAPI.rejectWithValue(data.errors[0]);
   }
 
-  return data
+  return data;
 });
 
 export const authSlice = createSlice({
