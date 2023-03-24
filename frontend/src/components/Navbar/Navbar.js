@@ -2,7 +2,6 @@ import "./Navbar.css";
 
 import { Link, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BsSearch, BsHouseDoorFill, BsFillPersonFill, BsFillCameraFill } from "react-icons/bs";
 
@@ -33,7 +32,7 @@ const Navbar = () => {
       </form>
 
       <ul id="nav-links">
-        {auth ? (
+        {(auth && user) ? (
           <>
             <li>
               <NavLink to="/">

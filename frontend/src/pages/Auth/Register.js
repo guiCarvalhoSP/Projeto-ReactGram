@@ -1,11 +1,11 @@
-import "./Auth.css";
+import './Auth.css';
 
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import { register, reset } from "../../slices/authSlice";
-import Message from "../../components/Message/Message";
+import Message from '../../components/Message/Message';
+import { register, reset } from '../../slices/authSlice';
 
 const Register = () => {
   const [name, setName] = useState("");
