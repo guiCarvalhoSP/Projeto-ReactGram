@@ -48,7 +48,7 @@ const Navbar = () => {
             )}
 
             <li>
-              <NavLink to={`/profile/${user._id}`}>
+              <NavLink to={`/profile`}>
                 <BsFillPersonFill />
               </NavLink>
             </li>
