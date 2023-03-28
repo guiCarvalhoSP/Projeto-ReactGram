@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import { getUserDetails } from "../../slices/userSlice";
-import { getUserPhotos, publishPhoto, resetMessage } from "../../slices/photoSlice";
+import { deletePhoto, getUserPhotos, publishPhoto, resetMessage } from "../../slices/photoSlice";
 
 const Profile = () => {
   const { id } = useParams();
@@ -38,6 +38,12 @@ const Profile = () => {
     dispatch(getUserPhotos(id));
   }, [dispatch, id]);
 
+  const resetComponentMessage = () => {
+    setTimeout(() => {
+      dispatch(resetMessage())
+    }, 2000);
+  }
+
   const handleFile = (e) => {
     const image = e.target.files[0];
 
@@ -62,10 +68,14 @@ const Profile = () => {
 
     setTitle("");
 
-    setTimeout(() => {
-      dispatch(resetMessage())
-    }, 2000);
+    resetComponentMessage();
   };
+
+  const handleDelete = async (id) => {
+    dispatch(deletePhoto(id));
+
+    resetComponentMessage();
+  }
 
   if (loading) {
     return <p>Carregando...</p>;
@@ -125,13 +135,9 @@ const Profile = () => {
                     <BsFillEyeFill />
                   </Link>
 
-                  <Link>
-                    <BsPencilFill />
-                  </Link>
+                  <BsPencilFill/>
 
-                  <Link>
-                    <BsXLg />
-                  </Link>
+                  <BsXLg onClick={() => handleDelete(photo._id)}/>
                 </div>
               ) : (
                 <Link className="btn" to={`/photo/${photo._id}`}>Ver</Link>
