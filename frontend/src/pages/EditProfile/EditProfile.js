@@ -70,7 +70,7 @@ const EditProfile = () => {
     setPreviewImage(image);
 
     setImageProfile(image);
-  }
+  };
 
   return (
     <div id="edit-profile">

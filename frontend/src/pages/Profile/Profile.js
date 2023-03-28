@@ -1,4 +1,4 @@
-import './Profile.css';
+import "./Profile.css";
 
 import { uploads } from "../../utils/config";
 
@@ -10,7 +10,8 @@ import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import { getUserDetails } from '../../slices/userSlice';
+import { getUserDetails } from "../../slices/userSlice";
+import { getUserPhotos, publishPhoto, resetMessage } from "../../slices/photoSlice";
 
 const Profile = () => {
   const { id } = useParams();
@@ -19,24 +20,59 @@ const Profile = () => {
 
   const { user, loading } = useSelector((state) => state.user);
   const { user: userAuth } = useSelector((state) => state.auth);
+  const {
+    photos,
+    loading: loadingPhoto,
+    message: messagePhoto,
+    error: errorPhoto,
+  } = useSelector((state) => state.photo);
+
+  const [title, setTitle] = useState("");
+  const [image, setImage] = useState("");
 
   const newPhotoForm = useRef();
   const editPhotoForm = useRef();
 
   useEffect(() => {
     dispatch(getUserDetails(id));
-  }, [dispatch, id])
+    dispatch(getUserPhotos(id));
+  }, [dispatch, id]);
 
-  const submitHandle = (e) => {
+  const handleFile = (e) => {
+    const image = e.target.files[0];
+
+    setImage(image);
+  };
+
+  const submitHandle = async (e) => {
     e.preventDefault();
-  }
 
-  if(loading) {
-    return <p>Carregando...</p>
+    const photoData = {
+      title,
+      image
+    }
+
+    const formData = new FormData();
+    const photoFormData = Object.keys(photoData).forEach(
+      (key) => formData.append(key, photoData[key]));
+
+    formData.append("photo", photoFormData);
+
+    await dispatch(publishPhoto(formData));
+
+    setTitle("");
+
+    setTimeout(() => {
+      dispatch(resetMessage())
+    }, 2000);
+  };
+
+  if (loading) {
+    return <p>Carregando...</p>;
   }
 
   return (
-    <div id='profile'>
+    <div id="profile">
       <div className="profile-header">
         {user.profileImage && (
           <img src={`${uploads}/users/${user.profileImage}`} alt={user.name} />
@@ -46,7 +82,7 @@ const Profile = () => {
           <p>{user.bio}</p>
         </div>
       </div>
-      
+
       {id === userAuth._id && (
         <>
           <div className="new-photo" ref={newPhotoForm}>
@@ -54,21 +90,59 @@ const Profile = () => {
             <form onSubmit={submitHandle}>
               <label>
                 <span>Título da foto:</span>
-                <input type="text" placeholder='Insira um título'/>
+                <input
+                  type="text"
+                  placeholder="Insira um título"
+                  onChange={(e) => setTitle(e.target.value)}
+                  value={title || ""}
+                />
               </label>
               <label>
                 <span>Imagem:</span>
-                <input type="file"/>
+                <input type="file" onChange={handleFile} />
               </label>
 
-              <input type="submit" value="Postar"/>
+              {!loadingPhoto && <input type="submit" value="Postar" />}
+              {loadingPhoto && <input type="submit" value="Aguarde..." />}
+              {errorPhoto && <Message msg={errorPhoto} type="error" />}
+              {messagePhoto && <Message msg={messagePhoto} type="success" />} 
             </form>
           </div>
         </>
       )}
+      <div className="user-photos">
+        <h2>Fotos publicadas:</h2>
+        <div className="photos-container">
+          {photos && photos.map((photo) => (
+            <div className="photo" key={photo._id}>
+              {photo.image && (
+                <img src={`${uploads}/photos/${photo.image}`} alt={photo.title} />
+              )}
 
+              {id === userAuth._id ? (
+                <div className="actions"> 
+                  <Link to={`/photos/${photo._id}`}>
+                    <BsFillEyeFill />
+                  </Link>
+
+                  <Link>
+                    <BsPencilFill />
+                  </Link>
+
+                  <Link>
+                    <BsXLg />
+                  </Link>
+                </div>
+              ) : (
+                <Link className="btn" to={`/photo/${photo._id}`}>Ver</Link>
+              )}
+            </div>
+          ))}
+          {photos.lenght === 0 && <p>Ainda não há fotos publicadas!</p>}
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;
