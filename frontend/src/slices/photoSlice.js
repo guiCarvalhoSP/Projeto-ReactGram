@@ -46,13 +46,13 @@ export const deletePhoto = createAsyncThunk("photo/delete", async (id, thunkApi)
   return data;
 });
 
-export const updatePhoto = createAsyncThunk("photo/update", async (photoData, thunkApi) => {
+export const updatePhoto = createAsyncThunk("photo/update", async (commentData, thunkApi) => {
 
   const token = thunkApi.getState().auth.user.token;
 
   const data = await photoService.updatePhoto(
-    {title: photoData.title},
-    photoData.id,
+    {title: commentData.title},
+    commentData.id,
     token
   );
 
@@ -77,6 +77,23 @@ export const like = createAsyncThunk("photo/like", async (id, thunkApi) => {
   const token = thunkApi.getState().auth.user.token;
 
   const data = await photoService.like(id, token);
+
+  if (data.errors) {
+    return thunkApi.rejectWithValue(data.errors[0]);
+  }
+
+  return data;
+});
+
+export const comment = createAsyncThunk("photo/comment", async (photoData, thunkApi) => {
+
+  const token = thunkApi.getState().auth.user.token;
+
+  const data = await photoService.comment(
+    { comment: photoData.comment },
+    photoData.id,
+    token
+  );
 
   if (data.errors) {
     return thunkApi.rejectWithValue(data.errors[0]);
@@ -190,6 +207,19 @@ export const photoSlice = createSlice({
         state.message = action.payload.message;
       })
       .addCase(like.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(comment.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.error = null;
+
+        state.photo.comments.push(action.payload.comment);
+
+        state.message = action.payload.message;
+      })
+      .addCase(comment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
