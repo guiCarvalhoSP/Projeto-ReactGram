@@ -11,6 +11,7 @@ import EditProfile from './pages/EditProfile/EditProfile';
 import Home from './pages/Home/Home';
 import Photo from './pages/Photo/Photo';
 import Profile from './pages/Profile/Profile';
+import Search from './pages/Search/Search';
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
             <Route path='/profile' element={auth ? <EditProfile /> : <Navigate to="/login"/>}/>
             <Route path='/users/:id' element={auth ? <Profile /> : <Navigate to="/login"/>}/>
             <Route path='/photos/:id' element={auth ? <Photo /> : <Navigate to="/login"/>}/>
+            <Route path='/search' element={auth ? <Search /> : <Navigate to="/login"/>}/>
             <Route path='/login' element={!auth ? <Login /> : <Navigate to="/"/>}/>
             <Route path='/register' element={!auth ? <Register /> : <Navigate to="/"/>}/>
 
